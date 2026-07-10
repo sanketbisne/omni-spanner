@@ -36,6 +36,7 @@ spanner-omni-demo/
 │     ├── demo-script.md           # Presentation script & live speaker notes
 │     └── images/                  # Screenshots and verification media
 │           ├── spanner_logo.png                  # Official Spanner product logo
+│           ├── spanner_console_overview.png      # Spanner Omni console instance overview
 │           ├── spanner_databases_loaded.png      # Retail database schema tables
 │           ├── spanner_databases_view.png        # Spanner Omni console database list
 │           ├── spanner_query_insights_retail.png # Query insights dashboard
@@ -252,22 +253,27 @@ Test compiling and running analytical SQL joins:
 
 Attendees can browse the Spanner Omni Console at **`http://localhost:15026`** once port forwarding is established.
 
-### Step 1: Databases Dashboard List
+### Step 1: Console Instance Overview
+When you log into the Spanner Omni Console, the landing page provides a comprehensive overview of the deployed Spanner instances, their status, locations, version specifications, and endpoint configs:
+
+![Spanner Omni Console Instance Overview](docs/images/spanner_console_overview.png)
+
+### Step 2: Databases Dashboard List
 When you open the Console, the default dashboard lists the active Spanner instances. You will see the `retail` database active and ready to query:
 
 ![Spanner Omni Console Database List](docs/images/spanner_databases_view.png)
 
-### Step 2: Database Schema & Tables View
+### Step 3: Database Schema & Tables View
 Clicking on the `retail` database shows the schema configuration. The seeder populates 7 core relational tables (`Addresses`, `OrderItems`, `Orders`, `Payments`, `Products`, `ShoppingCarts`, `Users`):
 
 ![Retail Database Schema View](docs/images/spanner_databases_loaded.png)
 
-### Step 3: Query Insights Dashboard
+### Step 4: Query Insights Dashboard
 Select **Query Insights** in the left sidebar to analyze execution trends, CPU load, and latency distributions for completed transactions:
 
 ![Spanner Query Insights Panel](docs/images/spanner_query_insights_retail.png)
 
-### Step 4: System Insights Dashboard
+### Step 5: System Insights Dashboard
 Select **System Insights** in the left sidebar to analyze real-time system metrics, including CPU utilization by zone/priority/operation type, request latency, transaction throughput, and lock wait times:
 
 ![Spanner System Insights Panel](docs/images/spanner_system_insights.png)
