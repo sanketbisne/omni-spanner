@@ -38,7 +38,8 @@ spanner-omni-demo/
 │           ├── spanner_logo.png                  # Official Spanner product logo
 │           ├── spanner_databases_loaded.png      # Retail database schema tables
 │           ├── spanner_databases_view.png        # Spanner Omni console database list
-│           └── spanner_query_insights_retail.png # Query insights dashboard
+│           ├── spanner_query_insights_retail.png # Query insights dashboard
+│           └── spanner_system_insights.png       # Spanner Omni system insights dashboard
 │
 ├── terraform/
 │     ├── main.tf                  # Infrastructure (APIs, VPC, Subnets, GKE)
@@ -265,6 +266,11 @@ Clicking on the `retail` database shows the schema configuration. The seeder pop
 Select **Query Insights** in the left sidebar to analyze execution trends, CPU load, and latency distributions for completed transactions:
 
 ![Spanner Query Insights Panel](docs/images/spanner_query_insights_retail.png)
+
+### Step 4: System Insights Dashboard
+Select **System Insights** in the left sidebar to analyze real-time system metrics, including CPU utilization by zone/priority/operation type, request latency, transaction throughput, and lock wait times:
+
+![Spanner System Insights Panel](docs/images/spanner_system_insights.png)
 
 ---
 
