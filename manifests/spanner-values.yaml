@@ -1,0 +1,47 @@
+# --------------------------------------------------------------------------------
+# Spanner Omni Helm Chart Values Override
+# Custom mappings adjusted to fit target GKE node pools resources capacity.
+# --------------------------------------------------------------------------------
+
+global:
+  platform: gke
+  insecureMode: true
+
+deployment:
+  singleServer: true
+
+# Root-level configuration for Spanner Container resources requests
+resources:
+  cpu: 2
+  memory: 8Gi
+
+# Root-level configuration for Spanner PV data directories
+storage:
+  data:
+    size: "20Gi"
+  logs:
+    size: "5Gi"
+
+# Skip prepare upgrade job since we are deploying fresh
+skipPrepareUpgrade: true
+
+# Root-level Storage Class overrides
+dataStorageClass: "premium-rwo"
+logsStorageClass: "premium-rwo"
+
+# Console configuration (for UI dashboard port 15026)
+console:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 15026
+
+# Database service (port 15000)
+service:
+  type: ClusterIP
+  port: 15000
+
+# Monitoring configuration
+monitoring:
+  enabled: false
+  port: 15012

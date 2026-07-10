@@ -1,0 +1,100 @@
+================================================================================
+SLIDE 1: TITLE SLIDE
+================================================================================
+Title: Google Cloud Spanner Omni on Google Kubernetes Engine (GKE)
+Subtitle: Bring Google-Scale Relational Database Capabilities to Any Infrastructure
+Speaker: Senior GCP Engineer & Kubernetes Architect
+
+Speaker Notes:
+- Introduce yourself and welcome the audience.
+- Explain that today we are demonstrating how Spanner Omni allows users to deploy Spanner outside the standard GCP managed environment.
+- This is a preview developer capability designed to run in any Kubernetes environment, edge location, or local dev stack.
+
+================================================================================
+SLIDE 2: THE CHALLENGE
+================================================================================
+Title: The Hybrid/Multi-Cloud Database Dilemma
+Bullets:
+- Consistency vs. Portability (The standard cloud lock-in)
+- High latency when querying across cloud environments
+- Maintaining different schemas for cloud (Spanner) vs. on-prem (PostgreSQL/MySQL)
+- Complex syncing, replication, and migration logic
+
+Speaker Notes:
+- Cloud-native Spanner is amazing, but historically it locked you into Google Cloud hardware due to specialized atomic clocks.
+- Now, Spanner Omni bridges this gap, giving you the exact same Spanner engine and API surface anywhere.
+
+================================================================================
+SLIDE 3: ENTER CLOUD SPANNER OMNI
+================================================================================
+Title: What is Spanner Omni?
+Bullets:
+- Downloadable, self-managed software package
+- Runs on Kubernetes (GKE, EKS, vSphere) and bare-metal VMs
+- Uses a software-based TrueTime emulator
+- Matches the API, dialect, and schema capability of Cloud Spanner
+- Supports relational, graph, vector search, and full-text search
+
+Speaker Notes:
+- TrueTime emulator provides synchronization using NTP, enabling local transactional guarantees.
+- Fits seamlessly into standard GitOps workflows.
+
+================================================================================
+SLIDE 4: DEMO ARCHITECTURE
+================================================================================
+Title: GKE Deployment Topology
+Bullets:
+- VPC Subnet hosting regional GKE Standard Nodes
+- Namespace: spanner-omni (StatefulSets & PersistentVolumeClaims)
+- Service Ports: 15000 (Database) and 15026 (Web Admin Console)
+- GKE Managed Prometheus scraping metrics on port 15012
+- Local Developer Machine linked via background kubectl port-forwards
+
+Speaker Notes:
+- Show the visual architecture diagram (refer to architecture.png).
+- Walk through the network traffic flow from the client machine to GKE.
+
+================================================================================
+SLIDE 5: LIVE DEMO RUNTIME
+================================================================================
+Title: Let's Build It!
+Bullets:
+- Step 1: Diagnose & Pre-reqs (01-prerequisites.sh)
+- Step 2: Establish GCP Project & Billing (02-create-project.sh)
+- Step 3: Enable container, compute, and registry APIs (03-enable-apis.sh)
+- Step 4: Provision GKE via gcloud or Terraform (04-create-gke.sh)
+- Step 5: Install local CLI tools (05-install-tools.sh)
+- Step 6: Deploy Spanner Helm chart (06-install-spanner-omni.sh)
+
+Speaker Notes:
+- Emphasize that all steps are fully automated.
+- Move to terminal and execute scripts 01 to 06.
+
+================================================================================
+SLIDE 6: INTERACTING WITH THE DATABASE
+================================================================================
+Title: Connect & Query
+Bullets:
+- Establish port-forwarding tunnels (07-port-forward.sh)
+- Open Web Console at http://localhost:15026
+- Seed Retail database (08-create-sample-db.sh)
+- Run analytical and vector queries (09-run-demo.sh)
+
+Speaker Notes:
+- Show the web console live in the browser.
+- Run the queries and discuss the output (category revenues, vector similarity).
+
+================================================================================
+SLIDE 7: SUMMARY & RESOURCE CLEANUP
+================================================================================
+Title: Key Takeaways & Cleanup
+Bullets:
+- Spanner Omni brings Spanner APIs and performance to your edge/on-prem nodes
+- Standardized schemas across local dev, staging, and production environments
+- Fully observable via Prometheus and Grafana
+- Destroy all demo GKE assets cleanly (cleanup.sh)
+
+Speaker Notes:
+- Thank the audience.
+- Highlight the repository URL for downloading the demo.
+- Run cleanup.sh.

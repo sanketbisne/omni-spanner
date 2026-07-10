@@ -1,0 +1,16 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Local Binaries
+bin/
+
+# Temporary configs & tracking files
+.gcp_project_id
+.gcp_billing_account_id
+.temp_auth_token
+
+# OS files
+.DS_Store
+Thumbs.db

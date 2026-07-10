@@ -1,0 +1,40 @@
+# --------------------------------------------------------------------------------
+# Spanner Omni Monitoring Configuration
+# Contains configurations for:
+# 1. GKE-native Google Cloud Managed Service for Prometheus (GMP) PodMonitoring
+# 2. Standard Prometheus Operator ServiceMonitor
+# --------------------------------------------------------------------------------
+
+# 1. GKE-Native Managed Service for Prometheus (GMP) configuration
+# This runs out-of-the-box on modern GKE Standard clusters.
+apiVersion: monitoring.gke.io/v1
+kind: PodMonitoring
+metadata:
+  name: spanner-omni-pod-monitoring
+  namespace: spanner-omni
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: spanner-omni
+  endpoints:
+  - port: 15012
+    path: /metrics
+    interval: 15s
+---
+# 2. Community Prometheus Operator ServiceMonitor configuration
+# Use this if you are deploying standard Prometheus Operator/kube-prometheus-stack
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: spanner-omni-service-monitor
+  namespace: spanner-omni
+  labels:
+    release: prometheus # Change to match your Prometheus release label
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: spanner-omni
+  endpoints:
+  - port: metrics
+    path: /metrics
+    interval: 15s
