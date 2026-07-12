@@ -11,9 +11,11 @@ deployment:
   singleServer: true
 
 # Root-level configuration for Spanner Container resources requests
+# Tuned to 6Gi to reduce memory pressure on e2-standard-4 (15GB RAM) nodes
+# leaving headroom for kube-system, OS daemons, and console pod
 resources:
   cpu: 2
-  memory: 8Gi
+  memory: 6Gi
 
 # Root-level configuration for Spanner PV data directories
 storage:
@@ -33,7 +35,7 @@ logsStorageClass: "premium-rwo"
 console:
   enabled: true
   service:
-    type: ClusterIP
+    type: LoadBalancer
     port: 15026
 
 # Database service (port 15000)
