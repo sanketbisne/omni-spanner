@@ -247,7 +247,7 @@ Spanner is ready
 
 ## 🔌 Connecting & Seeding Database
 
-### 1. Establish Local Connections
+### 1. Establish Local Connections (Optional)
 Start background port-forwarding for database queries (port 15000) and the Web Console (port 15026):
 ```bash
 ./scripts/07-port-forward.sh
@@ -258,18 +258,16 @@ Run the schema creation and populate the tables with sample records:
 ```bash
 ./scripts/08-create-sample-db.sh
 ```
-**Verification Output:**
-```
-[INFO] Listing current Spanner Omni databases...
---------------------------------------------------
-NAME          STATE  VERSION_RETENTION_PERIOD  EARLIEST_VERSION_TIME        ENABLE_DROP_PROTECTION 
-retail        READY  1h                        2026-07-10T20:01:48.342296Z  false                   
-spanner-info  READY  1h                        2026-07-10T19:01:52.358438Z  false                   
---------------------------------------------------
-```
 
-### 3. Execute SQL Queries
-Test compiling and running analytical SQL joins:
+### 3. Run Interactive SQL Queries inside the Pod (Recommended)
+You can launch an interactive SQL command prompt directly inside the running container pod to query tables or create test databases live:
+```bash
+kubectl exec -it spanner-a-0 -n spanner-omni -- /google/spanner/bin/spanner sql --database=retail
+```
+*Note: Type `exit;` or press `Ctrl+D` to quit the prompt.*
+
+### 4. Execute Demo SQL Scripts
+Alternatively, run the pre-packaged analytical SQL joins via command line:
 ```bash
 ./scripts/09-run-demo.sh
 ```
@@ -278,29 +276,32 @@ Test compiling and running analytical SQL joins:
 
 ## 🖥️ Spanner Omni Web Console Walkthrough
 
-Attendees can browse the Spanner Omni Console at **`http://localhost:15026`** once port forwarding is established.
+The Spanner Omni local console (Spanner Anywhere UI) is exposed as a GKE service.
+
+### Direct High-Speed Access (Recommended)
+To bypass local port-forwarding bandwidth constraints, open the console directly using any of your GKE nodes' public IPs on the service NodePort (e.g., `30412`):
+*   `http://<node-public-ip>:30412/`
+
+*(Alternatively, browse to `http://localhost:15026` if `scripts/07-port-forward.sh` is running).*
 
 ### Step 1: Console Instance Overview
-When you log into the Spanner Omni Console, the landing page provides a comprehensive overview of the deployed Spanner instances, their status, locations, version specifications, and endpoint configs:
+The landing page provides a comprehensive overview of the deployed Spanner instances, their status, locations, version specifications, and endpoint configs:
 
 ![Spanner Omni Console Instance Overview](docs/images/spanner_console_overview.png)
 
 ### Step 2: Databases Dashboard List
-When you open the Console, the default dashboard lists the active Spanner instances. You will see the `retail` database active and ready to query:
+The databases dashboard lists the active Spanner instances. You will see the `retail` database status, its dialect (`GOOGLE_STANDARD_SQL`), and the populated tables count (`7`):
 
 ![Spanner Omni Console Database List](docs/images/spanner_databases_view.png)
 
-### Step 3: Database Schema & Tables View
-Clicking on the `retail` database shows the schema configuration. The seeder populates 7 core relational tables (`Addresses`, `OrderItems`, `Orders`, `Payments`, `Products`, `ShoppingCarts`, `Users`):
+*Note: In the local console, this list is a read-only monitoring dashboard. To run queries, use the interactive container SQL CLI (`kubectl exec`) described above.*
 
-![Retail Database Schema View](docs/images/spanner_databases_loaded.png)
-
-### Step 4: Query Insights Dashboard
+### Step 3: Query Insights Dashboard
 Select **Query Insights** in the left sidebar to analyze execution trends, CPU load, and latency distributions for completed transactions:
 
 ![Spanner Query Insights Panel](docs/images/spanner_query_insights_retail.png)
 
-### Step 5: System Insights Dashboard
+### Step 4: System Insights Dashboard
 Select **System Insights** in the left sidebar to analyze real-time system metrics, including CPU utilization by zone/priority/operation type, request latency, transaction throughput, and lock wait times:
 
 ![Spanner System Insights Panel](docs/images/spanner_system_insights.png)
