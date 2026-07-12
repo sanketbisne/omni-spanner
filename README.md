@@ -86,30 +86,50 @@ Before running the deployment scripts, make sure your local environment has the 
 
 ## 🚀 Installation & Deployment Walkthrough
 
-To run the entire demo, execute the scripts in numerical order:
+Follow these steps in sequence to clone, authenticate, provision, and deploy Spanner Omni.
 
-### 1. Check Prerequisites
-Verify that all CLI utilities are installed and that you have an active gcloud session.
+### 1. Clone the Repository
+Clone the codebase and navigate to the project directory:
+```bash
+git clone https://github.com/sanketbisne/omni-spanner.git
+cd omni-spanner
+```
+
+### 2. Authenticate to Google Cloud
+Authenticate your gcloud CLI session and set up Application Default Credentials (ADC):
+```bash
+# Log in to your Google Cloud account
+gcloud auth login
+
+# Configure your active credentials for client libraries and tools
+gcloud auth application-default login
+```
+
+### 3. Check Local Prerequisites
+Verify that all required CLI utilities (kubectl, Helm, jq, yq) are installed and available:
 ```bash
 ./scripts/01-prerequisites.sh
 ```
 
-### 2. Configure Google Cloud Project
-Specify your target Project ID (and billing account if creating a new project) and bind the session.
+### 4. Configure Google Cloud Project
+Specify your target GCP Project ID and initialize the local environment configuration:
 ```bash
+# Set your target project ID
 export GCP_PROJECT_ID="your-project-id"
-export GCP_BILLING_ACCOUNT_ID="012345-6789AB-CDEF01" # Optional
+
+# (Optional) Specify a billing account if creating a brand new project
+export GCP_BILLING_ACCOUNT_ID="012345-6789AB-CDEF01"
 
 ./scripts/02-create-project.sh
 ```
 
-### 3. Enable Required APIs
-Enable services including GKE (`container.googleapis.com`), Compute Engine, and Artifact Registry.
+### 5. Enable Required APIs
+Enable GKE, Compute Engine, Artifact Registry, Resource Manager, and IAM service APIs in the project:
 ```bash
 ./scripts/03-enable-apis.sh
 ```
 
-### 4. Create GKE Cluster
+### 6. Create GKE Cluster
 Deploy a regional GKE Standard cluster with autoscaling `e2-standard-4` nodes.
 ```bash
 # To deploy using gcloud CLI:
@@ -120,7 +140,7 @@ export USE_TERRAFORM="true"
 ./scripts/04-create-gke.sh
 ```
 
-### 5. Download Spanner CLI
+### 7. Download Spanner CLI
 Downloads the official Spanner Omni CLI tool locally (under `./bin/spanner`).
 ```bash
 ./scripts/05-install-tools.sh
@@ -133,7 +153,7 @@ Downloads the official Spanner Omni CLI tool locally (under `./bin/spanner`).
 Spanner Omni is packaged and installed using an official Helm chart. The deployment utilizes custom resource profiles designed to fit GKE node constraints.
 
 ### 1. Helm Configuration (`manifests/spanner-values.yaml`)
-Due to GKE Standard node allocations, resource constraints are set to `cpu: 2` and `memory: 8Gi` to prevent database engine memory starvation and gRPC timeouts while leaving headroom for Kubernetes system daemons:
+Due to GKE Standard node allocations, resource constraints are set to `cpu: 2` and `memory: 6Gi` (optimized from `8Gi`) to prevent database engine memory starvation and gRPC timeouts while leaving headroom for Kubernetes system daemons:
 ```yaml
 global:
   platform: gke
@@ -143,9 +163,10 @@ deployment:
   singleServer: true
 
 # Spanner container memory/CPU footprint
+# Tuned to 6Gi to reduce memory pressure on e2-standard-4 nodes
 resources:
   cpu: 2
-  memory: 8Gi
+  memory: 6Gi
 
 storage:
   data:
@@ -162,7 +183,7 @@ logsStorageClass: "premium-rwo"
 console:
   enabled: true
   service:
-    type: ClusterIP
+    type: LoadBalancer
     port: 15026
 
 service:
@@ -180,11 +201,17 @@ Execute the following to register the OCI registry, create the namespace, and de
 # Create namespace
 kubectl create namespace spanner-omni --dry-run=client -o yaml | kubectl apply -f -
 
-# Pull and install/upgrade Spanner Omni release
+# Authenticate Helm registry to Artifact Registry
+gcloud auth print-access-token | helm registry login us-docker.pkg.dev \
+  --username=oauth2accesstoken \
+  --password-stdin
+
+# Pull and install/upgrade Spanner Omni release (disabling openapi validation to avoid timeouts)
 helm upgrade --install spanner-omni oci://us-docker.pkg.dev/spanner-omni/charts/spanner-omni \
   --version 0.2.0 \
   --namespace spanner-omni \
-  -f manifests/spanner-values.yaml
+  -f manifests/spanner-values.yaml \
+  --disable-openapi-validation
 ```
 
 ---
