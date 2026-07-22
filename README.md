@@ -35,7 +35,7 @@ spanner-omni-demo/
 │     ├── troubleshooting.md       # Debugging, logs, and common pitfalls
 │     ├── demo-script.md           # Presentation script & live speaker notes
 │     └── images/                  # Screenshots and verification media
-│           ├── spanner_logo.png                  # Official Spanner product logo
+│           ├── spanner_logo.png                  # Standard Spanner product logo
 │           ├── spanner_console_overview.png      # Spanner Omni console instance overview
 │           ├── spanner_databases_loaded.png      # Retail database schema tables
 │           ├── spanner_databases_view.png        # Spanner Omni console database list
@@ -141,7 +141,7 @@ export USE_TERRAFORM="true"
 ```
 
 ### 7. Download Spanner CLI
-Downloads the official Spanner Omni CLI tool locally (under `./bin/spanner`).
+Downloads the Spanner Omni CLI tool locally (under `./bin/spanner`).
 ```bash
 ./scripts/05-install-tools.sh
 ```
@@ -150,7 +150,7 @@ Downloads the official Spanner Omni CLI tool locally (under `./bin/spanner`).
 
 ## ☸️ Helm Chart Configuration & Deployment
 
-Spanner Omni is packaged and installed using an official Helm chart. The deployment utilizes custom resource profiles designed to fit GKE node constraints.
+Spanner Omni is packaged and installed using a standard Helm chart. The deployment utilizes custom resource profiles designed to fit GKE node constraints.
 
 ### 1. Helm Configuration (`manifests/spanner-values.yaml`)
 Due to GKE Standard node allocations, resource constraints are set to `cpu: 2` and `memory: 6Gi` (optimized from `8Gi`) to prevent database engine memory starvation and gRPC timeouts while leaving headroom for Kubernetes system daemons:
