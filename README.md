@@ -272,6 +272,32 @@ Alternatively, run the pre-packaged analytical SQL joins via command line:
 ./scripts/09-run-demo.sh
 ```
 
+### 5. Create Custom Database & Table Schemas
+You can also create custom Spanner databases (e.g., `ioconnectdb1`) on the fly and construct table schemas interactively inside the running pod:
+
+**a. Create a new database:**
+```bash
+kubectl exec -it spanner-a-0 -n spanner-omni -- \
+  /google/spanner/bin/spanner databases create ioconnectdb1
+```
+
+**b. Launch interactive SQL shell:**
+```bash
+kubectl exec -it spanner-a-0 -n spanner-omni -- \
+  /google/spanner/bin/spanner sql --database=ioconnectdb1
+```
+
+**c. Execute DDL statement to create a table:**
+```sql
+CREATE TABLE Attendees (
+  AttendeeId INT64 NOT NULL,
+  Name STRING(MAX) NOT NULL,
+  Company STRING(MAX),
+  Role STRING(MAX),
+  RegisteredAt TIMESTAMP
+) PRIMARY KEY (AttendeeId);
+```
+
 ---
 
 ## 🖥️ Spanner Omni Web Console Walkthrough
